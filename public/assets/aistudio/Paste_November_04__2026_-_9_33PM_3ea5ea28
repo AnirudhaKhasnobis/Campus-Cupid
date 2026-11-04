@@ -1,0 +1,1339 @@
+# MASTER DEVELOPMENT PROMPT — CAMPUS CUPID
+## Full-Stack Campus Dating, Matchmaking & Community Voting Web Application
+
+You are an expert full-stack software engineer, product designer, database architect and security engineer.
+
+Your task is to design, develop, test and deploy a fully functional, production-ready, mobile-first campus dating and matchmaking web application called **Campus Cupid**.
+
+This is not a static UI prototype. Every button, form, filter, swipe, authentication flow, database operation, matching function, voting mechanism and administrative feature must work.
+
+The platform is designed for a closed university ecosystem consisting of approximately 1,000 students across six institutes.
+
+The entire application should be designed to operate on free-tier infrastructure wherever technically possible.
+
+Do not introduce paid services, paid APIs, paid subscriptions or billing requirements without explicitly informing me first.
+
+---
+
+# PART 1 — CORE PRODUCT REQUIREMENTS
+
+## 1. Product overview
+
+Build a campus-exclusive dating web application accessible through a public URL.
+
+Students will access it through a link shared on an existing college Instagram page.
+
+The application must work seamlessly on:
+- Android mobile browsers.
+- iPhone Safari.
+- Desktop browsers.
+- Tablets.
+
+It should behave like a lightweight mobile dating application, with a bottom navigation bar, swipe interactions, responsive cards and minimal loading times.
+
+There must be two distinct experiences:
+
+1. Student-facing application.
+2. Private administrator dashboard.
+
+The public application should have the following main sections:
+
+1. Matcher.
+2. Matchmaking.
+3. My Matches.
+4. Top Matches.
+5. My Profile.
+
+Every registered student has access to all features. There must not be separate account types for dating users and matchmaking users.
+
+All registered profiles must be eligible to appear in the dating discovery pool, regardless of which section they primarily use.
+
+## 2. Design direction
+
+Create a premium, minimal, contemporary dating application.
+
+Visual direction:
+- Soft pastel pink and off-white aesthetic.
+- Clean typography.
+- Rounded profile cards.
+- Subtle shadows.
+- Minimal navigation.
+- Elegant animations.
+- Smooth swipe transitions.
+- Generous spacing.
+- Clear visual hierarchy.
+
+Avoid:
+- Excessive gradients.
+- Cluttered layouts.
+- Unnecessary buttons.
+- Complicated onboarding.
+- Overly decorative elements.
+- Desktop-style interfaces squeezed into mobile screens.
+
+The application should feel like a professionally designed consumer dating product.
+
+Use a consistent design system throughout the application.
+
+Create reusable components for:
+- Profile cards.
+- Student profile headers.
+- Buttons.
+- Navigation.
+- Search.
+- Filters.
+- Confirmation dialogs.
+- Notifications.
+- Empty states.
+- Loading states.
+- Error states.
+
+---
+
+# PART 2 — AUTHENTICATION AND ACCOUNT CREATION
+
+## 3. Google authentication
+
+Implement Google account authentication.
+
+Preferred technology: Firebase Authentication using Google Sign-In.
+
+Registration flow:
+
+1. User opens the public URL.
+2. User sees the landing page.
+3. User clicks "Continue with Google".
+4. Google authentication opens.
+5. User selects their Google account.
+6. The application checks whether a profile already exists.
+7. Existing users go directly to the home screen.
+8. New users are redirected to mandatory profile creation.
+
+Important:
+- Do not implement traditional password registration.
+- Do not ask users to create passwords.
+- Do not create duplicate accounts when an existing user signs in again.
+- Use the authenticated Google UID as the stable account identifier.
+- Never use a username or email address as the primary database ID.
+- Store the Google email securely.
+- Do not expose authentication tokens.
+- Provide a functional logout option.
+
+If campus email verification is possible, support restricting registration to approved institutional email domains. Do not assume all institutes share the same email domain. Make eligibility configurable by the administrator.
+
+If institutional-domain verification is not configured, provide an optional campus invitation-code or admin-approval mechanism.
+
+Only allow users aged 18 or older to participate.
+
+## 4. Mandatory profile creation
+
+After first-time authentication, users must complete their profile before accessing the application.
+
+Required fields:
+
+### A. Username
+- Mandatory.
+- Unique across the platform.
+- Alphanumeric characters and underscores permitted.
+- No spaces.
+- Maximum 20 characters.
+- Case-insensitive uniqueness.
+- Display a real-time username availability check.
+- Prevent offensive or impersonating usernames through basic moderation.
+
+### B. Profile picture
+- Exactly one primary profile picture is required.
+- Accept JPEG, PNG and WebP.
+- Maximum upload size: 5 MB before compression.
+- Automatically compress and resize the image.
+- Generate an optimised thumbnail.
+- Display a preview before saving.
+- Allow replacement later.
+
+### C. Bio
+- Mandatory.
+- Maximum 200 characters.
+- Display character count.
+- Reject empty or whitespace-only bios.
+- Allow editing after registration.
+
+### D. Institute
+
+Create a mandatory dropdown with exactly these options:
+
+1. SIBM
+2. SIDTM
+3. SSBF
+4. SIMC
+5. SSVAP
+6. SSSS
+
+Do not allow free-text institute entry.
+
+### E. Year
+
+Create a mandatory dropdown:
+
+1. First Year
+2. Second Year
+
+Do not allow free-text year entry.
+
+### F. Instagram username
+- Collect the student's Instagram username.
+- Make it mandatory if practical, but do not require Instagram authentication.
+- Validate its format.
+- Store it as a username rather than an arbitrary URL.
+- Provide an option to edit it.
+- Do not publicly expose it before a mutual dating match.
+
+### Profile completion rules
+
+The user cannot enter Matcher or Matchmaking until:
+- Username is entered.
+- Profile picture is uploaded.
+- Bio is entered.
+- Institute is selected.
+- Year is selected.
+- Instagram username is provided.
+- Age eligibility is confirmed.
+
+Persist partially completed registrations so that users can resume profile creation without restarting.
+
+After successful completion, redirect to Matcher.
+
+---
+
+# PART 3 — STUDENT APPLICATION
+
+## 5. Navigation
+
+Create a persistent bottom navigation bar on mobile.
+
+Navigation tabs:
+
+1. Matcher.
+2. Matchmaking.
+3. My Matches.
+4. Top Matches.
+5. Profile.
+
+Use simple icons and short labels.
+
+The selected tab must have a clear visual indication.
+
+On desktop, adapt the navigation appropriately.
+
+---
+
+# PART 4 — MATCHER: DATING DISCOVERY
+
+## 6. Core functionality
+
+Create a Tinder-style swipe discovery experience.
+
+Display one student profile at a time.
+
+Each profile card must show:
+
+- Profile picture.
+- Username.
+- Bio.
+- Institute.
+- Year.
+
+The profile picture should occupy most of the card.
+
+Include:
+- Swipe right to like.
+- Swipe left to pass.
+- On-screen like button.
+- On-screen pass button.
+- Tap profile to view additional details if available.
+
+Support:
+- Touch gestures on mobile.
+- Mouse gestures or buttons on desktop.
+- Smooth animations.
+- Haptic feedback where supported.
+
+## 7. Dating discovery logic
+
+All registered and eligible users should be included in the discovery pool.
+
+Rules:
+
+- Never show the currently logged-in user's own profile.
+- Never show suspended or deleted accounts.
+- Never show blocked users.
+- Never show users who have blocked the current user.
+- Do not repeatedly show profiles already passed or liked.
+- Do not display the same profile multiple times in the active queue.
+- Do not show someone again after a mutual match.
+- Prevent duplicate likes.
+- Prevent users from liking themselves.
+- Handle simultaneous likes safely.
+
+For the first version, use a randomised discovery feed.
+
+Do not introduce complicated recommendation algorithms.
+
+## 8. Like and pass logic
+
+When a user swipes right:
+- Record a like in the database.
+- Check whether the other person has already liked the current user.
+- If yes, create a mutual match.
+- If no, save the like and continue.
+
+When a user swipes left:
+- Record a pass.
+- Do not create a match.
+- Exclude the passed profile from subsequent discovery sessions.
+
+All operations must be protected against duplicate submissions and network retries.
+
+## 9. Mutual matching
+
+When two users like each other:
+
+1. Create a unique mutual match record.
+2. Notify both users.
+3. Display a celebratory match screen.
+4. Reveal their Instagram usernames to each other.
+5. Provide an "Open Instagram" button.
+
+The Instagram profile URL should be generated using the voluntarily supplied username:
+
+https://www.instagram.com/USERNAME/
+
+Do not implement an in-app messaging system.
+
+Do not reveal Instagram usernames to users who have not mutually matched.
+
+Provide a "Report" and "Unmatch" option.
+
+Unmatching must prevent further discovery or interactions between the two accounts unless the user explicitly resets that relationship.
+
+## 10. Empty discovery state
+
+If the user has viewed all eligible profiles, display:
+
+"You're all caught up!"
+
+Include:
+- A friendly illustration or minimal graphic.
+- Explanation that more profiles will appear when new students join.
+- A refresh button to check for newly registered users.
+
+Refreshing must not reset previously recorded likes and passes.
+
+Do not show an infinite spinner or repeatedly load already rejected profiles.
+
+---
+
+# PART 5 — MATCHMAKING
+
+## 11. Matchmaking overview
+
+Create a separate section called "Matchmaking".
+
+It has two internal tabs:
+
+1. Match People.
+2. Matches.
+
+The purpose of this section is to let students recommend two other students whom they believe would make a good couple.
+
+All registered users should be searchable and selectable.
+
+## 12. Match People — searchable student directory
+
+Display a list of all registered students.
+
+Each list item should display:
+- Profile picture.
+- Username.
+- Bio preview.
+- Institute.
+- Year.
+
+Provide a search bar.
+
+Search should work using:
+- Username.
+- Display name, if available.
+
+Create filters for:
+
+### Institute
+- All Institutes.
+- SIBM.
+- SIDTM.
+- SSBF.
+- SIMC.
+- SSVAP.
+- SSSS.
+
+### Year
+- All Years.
+- First Year.
+- Second Year.
+
+Allow users to combine institute and year filters.
+
+Provide sorting:
+- Alphabetical username.
+- Institute.
+- Year.
+- Recently joined.
+
+Search and filters should work together.
+
+Use pagination or efficient database queries rather than downloading the entire database repeatedly.
+
+## 13. Pair nomination workflow
+
+The nomination workflow must be implemented exactly as follows.
+
+### Step 1: Select the first person
+
+The user opens Match People.
+
+They browse or search the directory.
+
+They click a student profile.
+
+The full profile opens.
+
+At the bottom of the profile, display a prominent button:
+
+"MATCH WITH"
+
+### Step 2: Select the second person
+
+When the user clicks "MATCH WITH":
+
+- Enter second-person selection mode.
+- Display the searchable student directory again.
+- Keep the first selected person visible in a small selection indicator.
+- Allow institute and year filtering.
+- Allow profile previews.
+
+The user chooses a second student.
+
+### Step 3: Confirmation screen
+
+Display both selected students side by side.
+
+Show:
+- Both profile pictures.
+- Both usernames.
+- Both bios.
+- Both institutes.
+- Both years.
+
+At the bottom provide two buttons:
+
+" MATCH THESE TWO "
+
+"CANCEL MATCH"
+
+### Step 4: Submission
+
+When "MATCH THESE TWO" is clicked:
+
+- Validate that both users are different.
+- Check for an existing duplicate nomination.
+- Create a new nomination record.
+- Save the nominating user's ID.
+- Save both nominated users' IDs.
+- Set nomination status to pending consent or review.
+- Show a success confirmation.
+
+After successful submission, return to the original Match People directory.
+
+### Important edge cases
+
+- A user cannot match themselves.
+- The same user cannot nominate the same pair repeatedly.
+- Reversing the order of the same pair must not create a duplicate.
+- Both users must be distinct.
+- Prevent spam nominations.
+- Prevent suspended accounts from nominating.
+- Prevent users from nominating people who have blocked them.
+- Allow administrators to review reported nominations.
+
+## 14. Unregistered student nominations
+
+Optionally support nominations involving someone who has not registered.
+
+Provide a separate "Nominate someone not on the app" option.
+
+Collect:
+- First person's registered profile.
+- Second person's name.
+- Institute.
+- Year, if known.
+
+Do not create a fake student account.
+
+Do not automatically create a public dating profile.
+
+Do not publish the pairing or expose personal details without consent.
+
+Mark these nominations as "Awaiting registration/consent".
+
+Allow the nominated student to claim their nomination after registering, but only after verifying their identity and explicitly consenting to participation.
+
+Keep unregistered nominations out of the public voting leaderboard until both people have registered and consented.
+
+---
+
+# PART 6 — MATCHES: COMMUNITY VOTING
+
+## 15. Matches tab
+
+This is different from personal mutual dating matches.
+
+It displays pairings nominated through Matchmaking.
+
+Create a card-based voting interface.
+
+Each pairing card must contain:
+
+- First person's profile picture.
+- First person's username.
+- First person's bio.
+- First person's institute and year.
+- Second person's profile picture.
+- Second person's username.
+- Second person's bio.
+- Second person's institute and year.
+
+Display the two profiles together in a visually appealing couple card.
+
+Provide:
+- Swipe right = YES.
+- Swipe left = NO.
+
+Also provide visible YES and NO buttons for desktop and accessibility.
+
+The user should be able to view the full pairing before voting.
+
+## 16. Voting rules
+
+Each authenticated user can vote only once per pairing.
+
+A vote is either:
+- YES.
+- NO.
+
+Store:
+- Pairing ID.
+- Voter ID.
+- Vote value.
+- Timestamp.
+
+Prevent:
+- Duplicate votes.
+- Self-voting where appropriate.
+- Voting on removed pairings.
+- Voting by suspended users.
+- Multiple votes through repeated requests or browser manipulation.
+
+Allow a user to change their vote only if the administrator enables this setting. Default: no vote changes.
+
+Do not expose voter identities publicly.
+
+Do not count votes from deleted, suspended or invalid accounts.
+
+A pairing must not become publicly visible until both nominated individuals have consented to being featured.
+
+## 17. Voting results
+
+Display:
+- Total YES votes.
+- Total NO votes.
+- YES percentage.
+- Ranking.
+
+Calculate:
+
+YES percentage = YES votes / (YES votes + NO votes) × 100.
+
+Use a sensible minimum voting threshold before displaying percentage rankings.
+
+Do not rank a pairing with one YES vote above a pairing with hundreds of votes simply because of a 100% percentage.
+
+Use a ranking formula based primarily on positive vote count, with percentage and total votes as tie-breakers.
+
+Make the ranking logic configurable from the admin dashboard.
+
+---
+
+# PART 7 — TOP MATCHES
+
+## 18. Leaderboard page
+
+Create a separate page called "Top Matches".
+
+Display the highest positively voted nominated pairings.
+
+Each leaderboard card should display:
+- Rank.
+- Both profile pictures.
+- Both usernames.
+- Both bios.
+- Institute and year.
+- YES votes.
+- NO votes.
+- YES percentage.
+
+Create:
+- Top 3 podium.
+- Ranked list for remaining pairings.
+- Weekly top pairing.
+- All-time top pairings.
+
+Provide sorting:
+- Most YES votes.
+- Highest approval percentage.
+- Most total votes.
+- Weekly ranking.
+
+Do not display pairings that have not received consent from both participants.
+
+Do not display withdrawn or suspended pairings.
+
+Include an explanation:
+
+"These rankings reflect community votes, not confirmed romantic relationships."
+
+Never imply that a nominated pair is actually dating or mutually interested.
+
+---
+
+# PART 8 — MY MATCHES
+
+## 19. Personal dating matches
+
+Create a separate page showing the user's mutual dating matches.
+
+Each card displays:
+- Other user's profile picture.
+- Username.
+- Bio.
+- Institute.
+- Year.
+- Date of matching.
+
+Provide an "Open Instagram" button.
+
+Do not mix community-nominated pairings with personal dating matches.
+
+Provide an unmatch option.
+
+When a match is removed, update both users' views.
+
+---
+
+# PART 9 — MY PROFILE
+
+## 20. Profile management
+
+Display the user's:
+- Profile picture.
+- Username.
+- Bio.
+- Institute.
+- Year.
+- Instagram username.
+
+Allow users to:
+- Change profile picture.
+- Edit bio.
+- Change Instagram username.
+- Update other permitted profile details.
+- Log out.
+- Delete account.
+
+Institute and year changes should be recorded.
+
+Do not permit users to edit their Google authentication identity.
+
+Provide a confirmation step before account deletion.
+
+Account deletion should:
+- Remove or anonymise personal profile information.
+- Remove profile photographs.
+- Remove or anonymise personal interaction data as appropriate.
+- Remove the user's active dating visibility.
+- Recalculate leaderboard eligibility.
+- Invalidate their authentication session.
+
+Handle deletion consistently across the database.
+
+---
+
+# PART 10 — ADMINISTRATOR DASHBOARD
+
+## 21. Separate admin interface
+
+Create a separate protected route:
+
+/admin
+
+This must be a fully functional administrator dashboard.
+
+It must not be accessible merely by knowing the URL.
+
+Use server-side or database-enforced administrator roles.
+
+Do not rely on frontend visibility checks.
+
+Create an administrator allowlist using an explicit Google account email or UID configured during deployment.
+
+Normal student accounts must never be able to assign themselves administrator privileges.
+
+Support additional moderators with restricted permissions.
+
+## 22. Admin overview dashboard
+
+Create an attractive analytics dashboard.
+
+Display the following cards:
+
+### User statistics
+- Total registered accounts.
+- Active accounts.
+- New registrations today.
+- New registrations this week.
+- New registrations this month.
+- Total eligible profiles.
+- Suspended accounts.
+- Deleted accounts.
+
+### Institute distribution
+
+Show the number of users from:
+- SIBM.
+- SIDTM.
+- SSBF.
+- SIMC.
+- SSVAP.
+- SSSS.
+
+### Year distribution
+
+Show:
+- First Year users.
+- Second Year users.
+
+### Dating statistics
+- Total likes.
+- Total passes.
+- Total mutual matches.
+- Match conversion rate.
+- Unique users who have swiped.
+- Average likes per user.
+
+### Matchmaking statistics
+- Total pair nominations.
+- Unique nominators.
+- Registered-user nominations.
+- Unregistered-name nominations.
+- Pending consent.
+- Approved pairings.
+
+### Voting statistics
+- Total YES votes.
+- Total NO votes.
+- Total votes.
+- Number of active voting pairings.
+- Top-ranked pairings.
+
+## 23. Analytics charts
+
+Implement functional charts using actual database data.
+
+Charts:
+1. Registration growth over time.
+2. Daily active users.
+3. Weekly active users.
+4. Institute-wise account distribution.
+5. Year-wise account distribution.
+6. Likes versus passes.
+7. Mutual matches over time.
+8. Nomination activity.
+9. Community voting activity.
+
+Provide date filters:
+- Today.
+- Last 7 days.
+- Last 30 days.
+- Last 90 days.
+- All time.
+
+Do not generate fake analytics data in the production dashboard.
+
+Display zero or an appropriate empty state if no records exist.
+
+## 24. Admin account management
+
+Create an account management page.
+
+Display a searchable table with:
+- Username.
+- Email.
+- Institute.
+- Year.
+- Registration date.
+- Account status.
+- Last active date.
+
+Provide:
+- Search by username.
+- Search by email.
+- Filter by institute.
+- Filter by year.
+- Filter by account status.
+- Sort by registration date.
+- Pagination.
+
+When an administrator opens an account, show the complete profile.
+
+Admin actions:
+- Suspend account.
+- Reactivate account.
+- Remove profile.
+- Review reports.
+- View profile photographs.
+- Review nomination activity.
+- Review account activity.
+
+Do not expose passwords, OAuth tokens or private authentication credentials.
+
+Log all important administrative actions.
+
+## 25. Admin nomination management
+
+Create a dedicated nomination management section.
+
+Administrators can:
+- View all pair nominations.
+- Search by either participant.
+- Filter by status.
+- View nominator.
+- View nomination date.
+- View YES and NO vote counts.
+- Approve eligible nominations.
+- Reject inappropriate nominations.
+- Remove reported pairings.
+- Suspend abusive nominators.
+
+## 26. Admin voting management
+
+Administrators can:
+- View all active pairings.
+- View vote totals.
+- View vote distribution.
+- Feature eligible pairings.
+- Remove inappropriate pairings.
+- Close voting.
+- Reopen voting where appropriate.
+- Configure leaderboard ranking.
+- Configure weekly winners.
+
+Never allow administrators to silently alter individual votes.
+
+Maintain an audit log for moderation and ranking changes.
+
+## 27. Reports and moderation
+
+Create a reporting system.
+
+Users should be able to report:
+- Fake profiles.
+- Impersonation.
+- Inappropriate photographs.
+- Harassment.
+- Offensive bios.
+- Unwanted nominations.
+- Other misconduct.
+
+Administrators can:
+- View reports.
+- Investigate profiles.
+- Record moderation decisions.
+- Suspend accounts.
+- Remove inappropriate content.
+- Mark reports resolved.
+
+Implement blocking.
+
+Blocked users must not be able to interact with or discover one another.
+
+Never expose the identity of the reporter to the reported user.
+
+---
+
+# PART 11 — DATABASE ARCHITECTURE
+
+## 28. Database requirements
+
+Use Firebase Firestore unless a technically justified alternative is necessary.
+
+Create a structured, indexed database.
+
+Suggested collections:
+
+### users
+- uid
+- email
+- username
+- usernameLowercase
+- institute
+- year
+- bio
+- profilePhotoURL
+- instagramUsername
+- createdAt
+- updatedAt
+- lastActiveAt
+- accountStatus
+- profileCompleted
+- ageConfirmed
+
+### likes
+- id
+- fromUserId
+- toUserId
+- createdAt
+
+### passes
+- id
+- fromUserId
+- toUserId
+- createdAt
+
+### datingMatches
+- id
+- userA
+- userB
+- createdAt
+- status
+
+### nominations
+- id
+- nominatedBy
+- personA
+- personB
+- personAName
+- personBName
+- personAInstitute
+- personBInstitute
+- registrationStatus
+- consentStatus
+- moderationStatus
+- createdAt
+
+### votes
+- id
+- nominationId
+- voterId
+- vote
+- createdAt
+
+### reports
+- id
+- reporterId
+- reportedUserId
+- reason
+- description
+- status
+- createdAt
+
+### blocks
+- id
+- blockerId
+- blockedUserId
+- createdAt
+
+### adminRoles
+- uid
+- role
+- assignedAt
+- assignedBy
+
+### activityEvents
+- id
+- userId
+- eventType
+- timestamp
+
+You may modify the schema if a better relational or document structure is necessary.
+
+Use database transactions or atomic operations for:
+- Mutual match creation.
+- Duplicate nomination prevention.
+- Vote submission.
+- Account deletion.
+- Administrator actions.
+
+Create appropriate composite indexes.
+
+Do not load every document for every interaction.
+
+Use pagination, query limits and efficient indexing.
+
+---
+
+# PART 12 — SECURITY
+
+## 29. Security requirements
+
+This is a real student-facing dating application.
+
+Security must be implemented from the beginning.
+
+Implement:
+
+1. Firebase Authentication.
+2. Firestore security rules.
+3. Role-based administrator access.
+4. Ownership validation for profiles.
+5. Validation of all database writes.
+6. Duplicate account prevention.
+7. Duplicate like prevention.
+8. Duplicate vote prevention.
+9. Upload size restrictions.
+10. Image MIME-type validation.
+11. Rate limiting for likes, nominations and votes.
+12. Blocking.
+13. Reporting.
+14. Secure account deletion.
+
+Critical:
+
+- Never trust frontend-only validation.
+- Never trust user-supplied UIDs.
+- Verify authenticated identity on every protected operation.
+- Never allow users to edit other people's profiles.
+- Never allow students to change their own admin role.
+- Never expose private database credentials.
+- Never put Firebase Admin SDK credentials in browser code.
+- Never allow unauthenticated database writes.
+- Do not expose Instagram usernames before mutual matching.
+- Protect administrator endpoints and operations.
+
+Where Firestore cannot enforce a uniqueness or transaction rule by itself, implement the operation using a secure backend function or another appropriate trusted mechanism.
+
+---
+
+# PART 13 — IMAGE STORAGE AND PERFORMANCE
+
+## 30. Image management
+
+Only one profile picture is required per student.
+
+The application should support up to 1,000 accounts.
+
+Implement:
+- Image compression.
+- Automatic resizing.
+- Maximum 5 MB source upload.
+- Optimised JPEG or WebP output.
+- Maximum approximately 200–300 KB after compression.
+- Thumbnail generation.
+- Lazy loading.
+- Appropriate image caching.
+
+For 1,000 profiles, aim to keep primary profile image storage around 200–300 MB.
+
+IMPORTANT FREE-TIER REQUIREMENT:
+
+Before implementing image storage, inspect the current Firebase Storage requirements.
+
+Do not activate a paid billing account or Blaze plan automatically.
+
+If Firebase Storage requires paid billing for this project, stop and propose a genuinely free-compatible alternative such as an eligible Supabase Storage plan or another suitable service.
+
+Do not silently introduce a paid dependency.
+
+Explain the storage architecture before implementation.
+
+---
+
+# PART 14 — PERFORMANCE AND CAPACITY
+
+## 31. Expected platform scale
+
+Design for:
+- 500 initial accounts.
+- 1,000 maximum initial accounts.
+- Up to 1,000 profile photographs.
+- Hundreds of daily interactions.
+- Multiple simultaneous users.
+- Concurrent likes and votes.
+
+Use:
+- Pagination.
+- Efficient queries.
+- Cached profile images.
+- Lazy loading.
+- Database indexes.
+- Optimised swipe transitions.
+- Minimal unnecessary network calls.
+
+Do not fetch all users and all photographs on every page load.
+
+Do not repeatedly request the same information.
+
+Use loading skeletons and appropriate error states.
+
+---
+
+# PART 15 — EDGE CASES
+
+## 32. Dating edge cases
+
+Test all of the following:
+
+1. User tries to like themselves.
+2. User likes someone who has already liked them.
+3. Two users like each other simultaneously.
+4. User repeatedly clicks the Like button.
+5. User loses internet connection while liking.
+6. User refreshes immediately after a match.
+7. User logs in from another device.
+8. User deletes their account after matching.
+9. User blocks an existing match.
+10. User unmatches someone.
+11. User has no remaining profiles.
+12. A new student joins after the user exhausts the feed.
+13. A profile becomes suspended while appearing in the swipe queue.
+14. A user changes their username.
+15. A user changes their profile photograph.
+
+## 33. Matchmaking edge cases
+
+Test:
+
+1. User nominates themselves.
+2. User selects the same person twice.
+3. Two users nominate the same pair in reverse order.
+4. A nominated student deletes their account.
+5. A nominated student is suspended.
+6. A nominated student has not registered.
+7. A nomination is withdrawn.
+8. A nomination is reported.
+9. A user submits multiple nominations rapidly.
+10. A nominated person refuses public participation.
+
+## 34. Voting edge cases
+
+Test:
+
+1. A user votes YES twice.
+2. A user votes NO twice.
+3. A user tries to change a vote.
+4. A pairing is removed during voting.
+5. One participant withdraws consent.
+6. A voter deletes their account.
+7. A voter is suspended.
+8. Two users vote simultaneously.
+9. A pairing receives zero votes.
+10. A pairing has only one vote.
+11. Two pairings have identical scores.
+12. A pairing has an unusually high approval percentage but very few votes.
+
+## 35. Authentication and profile edge cases
+
+Test:
+
+1. Google authentication fails.
+2. User cancels Google login.
+3. User closes the browser during registration.
+4. Username is already taken.
+5. Username contains invalid characters.
+6. Profile picture upload fails.
+7. User submits an empty bio.
+8. User skips mandatory institute selection.
+9. User skips year selection.
+10. User tries to access the dashboard without completing their profile.
+11. User tries to access /admin without permission.
+12. User changes devices.
+13. User logs out.
+14. User deletes their account.
+
+Every edge case should have a sensible response and must not corrupt the database.
+
+---
+
+# PART 16 — FREE DEPLOYMENT
+
+## 36. Zero-cost requirement
+
+My objective is to launch this platform without paying for:
+- AI development tools beyond their free tier.
+- Database hosting.
+- Authentication.
+- Photo storage.
+- Application hosting.
+- Analytics.
+- APIs.
+
+Use free plans wherever possible.
+
+Preferred services:
+- Google AI Studio for development.
+- Firebase Authentication for Google login.
+- Firestore for the database.
+- A verified free-tier image storage solution.
+- An eligible free hosting solution.
+
+Do not enable paid billing automatically.
+
+Before deployment, provide a clear breakdown of:
+- Services used.
+- Free-tier quotas.
+- Storage limits.
+- Database limits.
+- Hosting limits.
+- Potential costs.
+- Any limitations that could affect 1,000 accounts.
+
+If a requested feature cannot be implemented without payment, explain the issue and propose a free alternative.
+
+Do not claim a service is free unless its current pricing and requirements support that claim.
+
+## 37. Deployment requirements
+
+Provide two functional access points:
+
+PUBLIC APPLICATION:
+A shareable URL that students can access.
+
+ADMIN DASHBOARD:
+A protected /admin route.
+
+Ensure:
+- Public URL works on mobile.
+- Authentication redirects work.
+- Refreshing the page preserves the session.
+- Deep links work.
+- Admin access remains protected.
+- No development-only data appears in production.
+
+Do not publish until security and functional tests have passed.
+
+---
+
+# PART 17 — DEVELOPMENT WORKFLOW
+
+## 38. Build incrementally
+
+Do not attempt to generate the entire application in one uncontrolled operation.
+
+Work in these stages.
+
+### Stage 1 — Foundation
+- Initialise project.
+- Configure frontend.
+- Configure backend.
+- Configure authentication.
+- Establish database schema.
+- Configure security rules.
+
+### Stage 2 — Profile creation
+- Google login.
+- Mandatory onboarding.
+- Username validation.
+- Image upload.
+- Bio.
+- Institute and year selection.
+
+### Stage 3 — Dating
+- Profile discovery.
+- Swipe gestures.
+- Like/pass functionality.
+- Mutual matching.
+- Instagram redirection.
+
+### Stage 4 — Matchmaking
+- Student directory.
+- Search.
+- Institute/year filters.
+- Profile viewing.
+- Match with workflow.
+- Pair nomination.
+
+### Stage 5 — Community voting
+- Nominated pairing cards.
+- YES/NO voting.
+- Vote validation.
+- Top Matches leaderboard.
+
+### Stage 6 — Administration
+- Protected admin access.
+- Account management.
+- Analytics.
+- Nomination management.
+- Voting management.
+- Moderation.
+
+### Stage 7 — Testing and deployment
+- Security testing.
+- Edge-case testing.
+- Mobile testing.
+- Performance testing.
+- Free-tier quota verification.
+- Public deployment.
+
+After every stage:
+1. Verify that the feature works.
+2. Check that database writes succeed.
+3. Check that the feature works on mobile.
+4. Test the relevant edge cases.
+5. Fix errors before continuing.
+
+---
+
+# PART 18 — FINAL INSTRUCTIONS
+
+## 39. Non-negotiable requirements
+
+1. Build a working full-stack application, not a static prototype.
+2. All five student navigation sections must work.
+3. Google authentication must work.
+4. All mandatory profile fields must be enforced.
+5. All registered students must appear in the same dating discovery pool.
+6. Matcher and community Matchmaking must remain separate functions.
+7. Community nominations must not be confused with personal mutual dating matches.
+8. Voting must be limited to one vote per user per pairing.
+9. Top Matches must use real database data.
+10. Admin access must be protected by actual database/backend permissions.
+11. No fake production analytics.
+12. No fake user profiles in production.
+13. No in-app chat.
+14. Instagram details must be revealed only after mutual dating matches.
+15. Do not introduce paid services without my approval.
+16. Do not compromise security to make development easier.
+
+## 40. Your first response and first implementation
+
+Before writing the entire application:
+
+1. Explain the proposed technical architecture.
+2. Identify all services that can genuinely operate on free tiers.
+3. Identify any Firebase Storage or hosting billing restrictions.
+4. Explain how Google authentication will be configured.
+5. Propose the database schema.
+6. Identify potential technical limitations.
+
+Then begin implementing Stage 1.
+
+Do not stop at architecture or a design mockup. Continue building the actual application stage by stage, testing and correcting errors as you proceed.
+
+The final result must be a polished, functional, campus-exclusive dating and matchmaking platform that can be shared through an Instagram Highlight and support approximately 500–1,000 registered students.

@@ -1,0 +1,153 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all unknown operations
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'khasnobisanirudha@gmail.com' && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && request.resource.data.uid == request.auth.uid;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // Usernames Unique Index
+    match /usernames/{usernameLower} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    // Likes Collection
+    match /likes/{likeId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.fromUserId == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.fromUserId == request.auth.uid || isAdmin());
+    }
+
+    // Passes Collection
+    match /passes/{passId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.fromUserId == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.fromUserId == request.auth.uid || isAdmin());
+    }
+
+    // Mutual Dating Matches Collection
+    match /datingMatches/{matchId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && (
+        request.resource.data.userA == request.auth.uid ||
+        request.resource.data.userB == request.auth.uid ||
+        isAdmin()
+      );
+      allow update: if isSignedIn() && (
+        resource.data.userA == request.auth.uid ||
+        resource.data.userB == request.auth.uid ||
+        isAdmin()
+      );
+      allow delete: if isAdmin() || (
+        isSignedIn() && (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid)
+      );
+    }
+
+    // Community Nominations Collection
+    match /nominations/{nominationId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.nominatedBy == request.auth.uid &&
+        request.resource.data.personA is string &&
+        request.resource.data.personB is string &&
+        request.resource.data.personA != request.resource.data.personB;
+      allow update: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.personA == request.auth.uid ||
+          resource.data.personB == request.auth.uid ||
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['yesVotes', 'noVotes', 'totalVotes', 'yesPercentage', 'updatedAt'])
+        )
+      );
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.nominatedBy == request.auth.uid);
+    }
+
+    // Community Votes Collection
+    match /votes/{voteId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.voterId == request.auth.uid &&
+        request.resource.data.vote in ['YES', 'NO'];
+      allow update: if isAdmin();
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.voterId == request.auth.uid);
+    }
+
+    // Misconduct Reports
+    match /reports/{reportId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.reporterId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // User Blocks
+    match /blocks/{blockId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.blockerId == request.auth.uid;
+      allow delete: if isSignedIn() && (
+        resource.data.blockerId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Administrator Allowlist
+    match /admins/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // System Settings & Feature Controls
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Invitations
+    match /invitations/{invitationId} {
+      allow read: if isSignedIn();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (isSignedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'claimedByUid']));
+    }
+
+    // Audit Logs
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+  }
+}

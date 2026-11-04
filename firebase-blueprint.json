@@ -1,0 +1,277 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered campus student profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Authenticated Google UID" },
+        "email": { "type": "string", "description": "Student email address" },
+        "username": { "type": "string", "maxLength": 20, "minLength": 1, "pattern": "^[a-zA-Z0-9_]+$", "description": "Unique campus handle" },
+        "usernameLowercase": { "type": "string", "maxLength": 20, "description": "Lowercased username for unique checks" },
+        "institute": { "type": "string", "enum": ["SIBM", "SIDTM", "SSBF", "SIMC", "SSVAP", "SSSS"], "description": "Student institute" },
+        "year": { "type": "string", "enum": ["First Year", "Second Year"], "description": "Academic year" },
+        "bio": { "type": "string", "maxLength": 200, "minLength": 1, "description": "Student biography" },
+        "profilePhotoURL": { "type": "string", "description": "Optimized profile image data URL or URL" },
+        "instagramUsername": { "type": "string", "maxLength": 30, "pattern": "^[a-zA-Z0-9._]+$", "description": "Instagram handle" },
+        "gender": { "type": "string", "enum": ["man", "woman"], "description": "User gender identity" },
+        "interestedIn": { "type": "string", "enum": ["man", "woman", "everyone"], "description": "Dating preference" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account registration timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Profile update timestamp" },
+        "lastActiveAt": { "type": "string", "format": "date-time", "description": "Last active timestamp" },
+        "accountStatus": { "type": "string", "enum": ["active", "suspended", "deleted"], "description": "Account status" },
+        "profileCompleted": { "type": "boolean", "description": "Whether mandatory profile fields are completed" },
+        "ageConfirmed": { "type": "boolean", "description": "Must be 18 or older" }
+      },
+      "required": ["uid", "email", "username", "usernameLowercase", "institute", "year", "bio", "instagramUsername", "profileCompleted", "ageConfirmed", "accountStatus"]
+    },
+    "Username": {
+      "title": "Username",
+      "description": "Unique username index record",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Owner Google UID" },
+        "username": { "type": "string", "maxLength": 20, "description": "Original case username" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Reservation timestamp" }
+      },
+      "required": ["uid", "username"]
+    },
+    "Like": {
+      "title": "Like",
+      "description": "Swipe right record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique like ID" },
+        "fromUserId": { "type": "string", "description": "UID of liking user" },
+        "toUserId": { "type": "string", "description": "UID of liked user" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Swipe timestamp" }
+      },
+      "required": ["fromUserId", "toUserId"]
+    },
+    "Pass": {
+      "title": "Pass",
+      "description": "Swipe left record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique pass ID" },
+        "fromUserId": { "type": "string", "description": "UID of passing user" },
+        "toUserId": { "type": "string", "description": "UID of passed user" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Swipe timestamp" }
+      },
+      "required": ["fromUserId", "toUserId"]
+    },
+    "DatingMatch": {
+      "title": "DatingMatch",
+      "description": "Mutual dating match between two students",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique match ID" },
+        "userA": { "type": "string", "description": "UID of first user" },
+        "userB": { "type": "string", "description": "UID of second user" },
+        "userAUsername": { "type": "string", "description": "Username of user A" },
+        "userBUsername": { "type": "string", "description": "Username of user B" },
+        "userAInstagram": { "type": "string", "description": "Instagram handle of user A" },
+        "userBInstagram": { "type": "string", "description": "Instagram handle of user B" },
+        "userAPhotoURL": { "type": "string", "description": "Photo of user A" },
+        "userBPhotoURL": { "type": "string", "description": "Photo of user B" },
+        "userAInstitute": { "type": "string", "description": "Institute of user A" },
+        "userBInstitute": { "type": "string", "description": "Institute of user B" },
+        "userAYear": { "type": "string", "description": "Year of user A" },
+        "userBYear": { "type": "string", "description": "Year of user B" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Match timestamp" },
+        "status": { "type": "string", "enum": ["active", "unmatched"], "description": "Match status" }
+      },
+      "required": ["userA", "userB", "status"]
+    },
+    "Nomination": {
+      "title": "Nomination",
+      "description": "Student-nominated couple pairing for community voting",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique nomination ID" },
+        "nominatedBy": { "type": "string", "description": "UID of student nominator" },
+        "personA": { "type": "string", "description": "UID of first nominated student" },
+        "personB": { "type": "string", "description": "UID of second nominated student" },
+        "personAName": { "type": "string", "description": "Username or display name of person A" },
+        "personBName": { "type": "string", "description": "Username or display name of person B" },
+        "personAInstitute": { "type": "string", "description": "Institute of person A" },
+        "personBInstitute": { "type": "string", "description": "Institute of person B" },
+        "personAYear": { "type": "string", "description": "Academic year of person A" },
+        "personBYear": { "type": "string", "description": "Academic year of person B" },
+        "personAPhotoURL": { "type": "string", "description": "Photo of person A" },
+        "personBPhotoURL": { "type": "string", "description": "Photo of person B" },
+        "registrationStatus": { "type": "string", "enum": ["both_registered", "one_unregistered", "both_unregistered"], "description": "Whether nominated students are registered" },
+        "consentStatus": { "type": "string", "enum": ["approved", "pending", "declined"], "description": "Consent status for public feature" },
+        "moderationStatus": { "type": "string", "enum": ["active", "hidden", "removed"], "description": "Admin moderation status" },
+        "yesVotes": { "type": "number", "description": "Positive vote count" },
+        "noVotes": { "type": "number", "description": "Negative vote count" },
+        "totalVotes": { "type": "number", "description": "Total vote count" },
+        "yesPercentage": { "type": "number", "description": "Calculated YES approval percentage" },
+        "featured": { "type": "boolean", "description": "Whether featured by admin" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Nomination timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Vote or moderation update timestamp" }
+      },
+      "required": ["nominatedBy", "personA", "personB", "registrationStatus", "consentStatus", "moderationStatus"]
+    },
+    "Vote": {
+      "title": "Vote",
+      "description": "Community vote on a nominated couple pairing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique vote ID (${nominationId}_${voterId})" },
+        "nominationId": { "type": "string", "description": "ID of nomination" },
+        "voterId": { "type": "string", "description": "UID of voting student" },
+        "vote": { "type": "string", "enum": ["YES", "NO"], "description": "Vote value" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Vote timestamp" }
+      },
+      "required": ["nominationId", "voterId", "vote"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "User report for misconduct or inappropriate content",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique report ID" },
+        "reporterId": { "type": "string", "description": "UID of reporting student" },
+        "reportedUserId": { "type": "string", "description": "UID of reported account" },
+        "targetType": { "type": "string", "enum": ["profile", "nomination"], "description": "Target entity type" },
+        "targetId": { "type": "string", "description": "Target document ID" },
+        "reason": { "type": "string", "description": "Report reason" },
+        "description": { "type": "string", "maxLength": 500, "description": "Additional user report details" },
+        "status": { "type": "string", "enum": ["pending", "investigating", "resolved", "dismissed"], "description": "Moderation status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Report timestamp" }
+      },
+      "required": ["reporterId", "reportedUserId", "reason", "status"]
+    },
+    "Block": {
+      "title": "Block",
+      "description": "User block record to prevent discovery and interaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique block ID (${blockerId}_${blockedUserId})" },
+        "blockerId": { "type": "string", "description": "UID of student blocking" },
+        "blockedUserId": { "type": "string", "description": "UID of student blocked" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Block timestamp" }
+      },
+      "required": ["blockerId", "blockedUserId"]
+    },
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Administrator authorization record",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Google UID of admin" },
+        "email": { "type": "string", "description": "Admin email" },
+        "role": { "type": "string", "enum": ["admin", "moderator"], "description": "Privilege level" },
+        "assignedAt": { "type": "string", "format": "date-time", "description": "Assignment timestamp" },
+        "assignedBy": { "type": "string", "description": "Creator UID" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "SystemSetting": {
+      "title": "SystemSetting",
+      "description": "Platform global configuration and feature flags",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Setting ID" },
+        "collegeEmailDomains": { "type": "string", "description": "Comma separated domain list or empty" },
+        "isRegistrationOpen": { "type": "boolean", "description": "Whether new registrations are accepted" },
+        "enableMatcher": { "type": "boolean", "description": "Matcher feature toggle" },
+        "enableMatchmaking": { "type": "boolean", "description": "Matchmaking feature toggle" },
+        "enableCommunityVoting": { "type": "boolean", "description": "Community voting feature toggle" },
+        "enableTopMatches": { "type": "boolean", "description": "Top matches feature toggle" },
+        "isVotingClosed": { "type": "boolean", "description": "Whether community voting is temporarily closed" },
+        "minVotingThreshold": { "type": "number", "description": "Minimum votes to appear on leaderboard" },
+        "allowVoteChange": { "type": "boolean", "description": "Whether users can change their votes" },
+        "allowSelfNomination": { "type": "boolean", "description": "Whether self nomination is enabled" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last configuration update" }
+      },
+      "required": ["isRegistrationOpen", "minVotingThreshold"]
+    },
+    "Invitation": {
+      "title": "Invitation",
+      "description": "Pre-created student invitation record by administrators",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique invitation ID" },
+        "username": { "type": "string", "maxLength": 20, "description": "Reserved username" },
+        "email": { "type": "string", "description": "Invited student email if specified" },
+        "institute": { "type": "string", "enum": ["SIBM", "SIDTM", "SSBF", "SIMC", "SSVAP", "SSSS"], "description": "Institute" },
+        "year": { "type": "string", "enum": ["First Year", "Second Year"], "description": "Academic year" },
+        "status": { "type": "string", "enum": ["pending", "claimed"], "description": "Claim status" },
+        "claimedByUid": { "type": "string", "description": "Google UID of student who claimed" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["username", "institute", "year", "status"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Administrative actions audit log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Log ID" },
+        "adminId": { "type": "string", "description": "UID of admin" },
+        "adminEmail": { "type": "string", "description": "Email of admin" },
+        "action": { "type": "string", "description": "Action performed" },
+        "targetId": { "type": "string", "description": "Target entity ID" },
+        "details": { "type": "string", "description": "Description of change" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Action timestamp" }
+      },
+      "required": ["adminId", "action", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user profiles with basic discovery attributes"
+    },
+    "/usernames/{usernameLower}": {
+      "schema": "Username",
+      "description": "Stores case-insensitive username index for uniqueness validation"
+    },
+    "/likes/{likeId}": {
+      "schema": "Like",
+      "description": "Stores dating likes initiated by students"
+    },
+    "/passes/{passId}": {
+      "schema": "Pass",
+      "description": "Stores dating passes initiated by students"
+    },
+    "/datingMatches/{matchId}": {
+      "schema": "DatingMatch",
+      "description": "Stores mutual dating matches between matched students"
+    },
+    "/nominations/{nominationId}": {
+      "schema": "Nomination",
+      "description": "Stores student couple nominations for community voting"
+    },
+    "/votes/{voteId}": {
+      "schema": "Vote",
+      "description": "Stores community votes on nominations"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Stores user misconduct and abuse reports"
+    },
+    "/blocks/{blockId}": {
+      "schema": "Block",
+      "description": "Stores user blocking relationships"
+    },
+    "/admins/{userId}": {
+      "schema": "AdminRole",
+      "description": "Stores verified administrator and moderator accounts"
+    },
+    "/settings/{settingId}": {
+      "schema": "SystemSetting",
+      "description": "Stores system settings and configuration flags"
+    },
+    "/invitations/{invitationId}": {
+      "schema": "Invitation",
+      "description": "Stores admin pre-created student accounts and invitations"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Stores administrative audit log records"
+    }
+  }
+}

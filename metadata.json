@@ -1,0 +1,6 @@
+{
+  "name": "Campus Cupid",
+  "description": "Campus-exclusive dating, matchmaking, and community voting for university students.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
